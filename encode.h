@@ -69,11 +69,12 @@ void encode_char_to_image(char *arr, char data);
 
 void encode_int_image(char *arr,int data);
 
-
 /* Store Magic String */
 Status encode_magic_string(const char *magic_string, EncodeInfo *encInfo);
 
-void encode_string_to_image(char *str,int size,FILE * fptr_src_image,FILE * fptr_stego_image);
+void encode_string_to_image(const char *str,int size,FILE * fptr_src_image,FILE * fptr_stego_image);
+
+Status encode_secret_file_extn_size(EncodeInfo *encInfo);
 
 /* Encode secret file extenstion */
 Status encode_secret_file_extn(const char *file_extn, EncodeInfo *encInfo);
