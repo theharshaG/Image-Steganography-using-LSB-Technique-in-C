@@ -6,14 +6,6 @@
 #include "common.h"
 
 /* Function Definitions */
-
-/* Get image size
- * Input: Image file ptr
- * Output: width * height * bytes per pixel (3 in our case)
- * Description: In BMP Image, width is stored in offset 18,
- * and height after that. size is 4 bytes
- */
-
 Status read_and_validate_encode_args(char *argv[], EncodeInfo *encInfo)
 {
     if (strstr(argv[2], ".bmp") || strstr(argv[2], ".BMP"))
@@ -248,6 +240,19 @@ Status encode_secret_file_size(long file_size, EncodeInfo *encInfo)
     fwrite(arr, 32, 1, encInfo->fptr_stego_image);
     return e_success;
 }
+
+Status encode_data_to_image(char *data, int size,FILE *fptr_src_image,FILE *fptr_stego_image)
+{
+    for (int i = 0; i < size; i++)
+    {
+        char arr[8];
+        fread(arr, 8, 1, fptr_src_image);
+        encode_char_to_image(arr, data[i]);
+        fwrite(arr, 8, 1, fptr_stego_image);
+    }
+
+    return e_success;
+}
 Status encode_secret_file_data(EncodeInfo *encInfo)
 {
     char *data;
@@ -257,37 +262,14 @@ Status encode_secret_file_data(EncodeInfo *encInfo)
         return e_failure;
     }
     rewind(encInfo->fptr_secret);
-    if (fread(data, 1, encInfo->size_secret_file,
-              encInfo->fptr_secret) != encInfo->size_secret_file)
+    if (fread(data, 1, encInfo->size_secret_file,encInfo->fptr_secret) != encInfo->size_secret_file)
     {
         free(data);
         return e_failure;
     }
 
-    encode_data_to_image(
-        data,
-        encInfo->size_secret_file,
-        encInfo->fptr_src_image,
-        encInfo->fptr_stego_image);
-
+    encode_data_to_image(data,encInfo->size_secret_file,encInfo->fptr_src_image,encInfo->fptr_stego_image);
     free(data);
-
-    return e_success;
-}
-Status encode_data_to_image(char *data, int size,
-                            FILE *fptr_src_image,
-                            FILE *fptr_stego_image)
-{
-    for (int i = 0; i < size; i++)
-    {
-        char arr[8];
-
-        fread(arr, 8, 1, fptr_src_image);
-
-        encode_char_to_image(arr, data[i]);
-
-        fwrite(arr, 8, 1, fptr_stego_image);
-    }
 
     return e_success;
 }

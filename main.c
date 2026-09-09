@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "encode.h"
+#include "decode.h"
 #include "types.h"
 
 OperationType check_operation_type(char *argv[]);
@@ -32,7 +33,18 @@ int main(int argc, char *argv[])
     }
     else if (res == e_decode)
     {
-        // do_decode();
+        DecodeInfo decInfo;
+
+        if (read_and_validate_decode_args(argv, &decInfo) == e_success)
+        {
+            printf("you opened Decode\n");
+            do_decoding(&decInfo);
+        }
+        else
+        {
+            printf("Invalid arguments for Decode\n");
+            return 0;
+        }
     }
     else
     {
