@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "decode.h"
 
 Status read_and_validate_decode_args(char *argv[], DecodeInfo *decInfo)
@@ -14,9 +15,10 @@ Status read_and_validate_decode_args(char *argv[], DecodeInfo *decInfo)
     }
     if(argv[3]!=NULL)
     {
-        if(strstr(argv[3],".txt"))
+        if(strstr(argv[3],"."))
         {
-            decInfo->secret_fname=argv[3];
+            char delims[] = ".";
+            decInfo->secret_fname=strtok(argv[3],delims);
         }
         else
         {
@@ -25,7 +27,7 @@ Status read_and_validate_decode_args(char *argv[], DecodeInfo *decInfo)
     }
     else
     {
-        decInfo->secret_fname="output.txt";
+        decInfo->secret_fname=NULL;
     }
     return e_success;
 }
@@ -33,11 +35,6 @@ Status open_decode_file(DecodeInfo *decInfo)
 {
     decInfo->fptr_stego_image=fopen(decInfo->stego_image_fname,"r");
     if(decInfo->fptr_stego_image==NULL)
-    {
-        return e_failure;
-    }
-    decInfo->fptr_secret = fopen(decInfo->secret_fname, "w");
-    if(decInfo->fptr_secret == NULL)
     {
         return e_failure;
     }
@@ -203,6 +200,23 @@ Status do_decoding(DecodeInfo *decInfo)
         printf("ERROR: Failed to decode secret file Extension.\n");
         return e_failure;
     }
+
+    char output_fname[20];
+    if(decInfo->secret_fname == NULL)
+    {
+        strcpy(output_fname,"output");
+    }
+    else
+    {
+        strcpy(output_fname, decInfo->secret_fname);
+    }
+
+    strcat(output_fname, decInfo->extn_secret_file);
+
+    strcpy(decInfo->secret_fname, output_fname);
+
+    decInfo->fptr_secret = fopen(decInfo->secret_fname, "w");
+
     if(decode_secret_file_size(decInfo)==e_failure)
     {
         printf("ERROR: Failed to decode secret file Size.\n");

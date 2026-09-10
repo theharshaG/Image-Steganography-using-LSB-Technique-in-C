@@ -24,7 +24,6 @@ typedef struct _DecodeInfo
     int extn_size;
     char extn_secret_file[10];
 
-
 } DecodeInfo;
 
 

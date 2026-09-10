@@ -17,7 +17,7 @@ Status read_and_validate_encode_args(char *argv[], EncodeInfo *encInfo)
         return e_failure;
     }
 
-    if (strstr(argv[3], ".txt"))
+    if (strstr(argv[3], ".")!=NULL)
     {
         encInfo->secret_fname = argv[3];
         strcpy(encInfo->extn_secret_file,strstr(argv[3], "."));
@@ -54,11 +54,11 @@ uint get_image_size_for_bmp(FILE *fptr_image)
 
     // Read the width (an int)
     fread(&width, sizeof(int), 1, fptr_image);
-    printf("width = %u\n", width);
+    //printf("width = %u\n", width);
 
     // Read the height (an int)
     fread(&height, sizeof(int), 1, fptr_image);
-    printf("height = %u\n", height);
+    //printf("height = %u\n", height);
 
     // Return image capacity
 
@@ -302,7 +302,7 @@ Status do_encoding(EncodeInfo *encInfo)
         return e_failure;
     }
 
-    printf("Capacity check successful\n");
+    //printf("Capacity check successful\n");
 
     if (copy_bmp_header(encInfo->fptr_src_image,encInfo->fptr_stego_image) == e_failure)
     {
